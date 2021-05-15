@@ -34,12 +34,64 @@ const signInSchema = {
         type : String,
         required : true
     },
-    ConfPassword:{
+    Address:{
+        type : String,
+        // required : true
+    },
+    Contact:{
+        type : String,
+        // required : true
+    },
+    Pin:{
+        type : String,
+        // required : true
+    },
+    Pid : {
+        type : String
+    },
+    Type : {
+        type : String
+    },
+    CartItem : [],
+    BaughtItem : [],
+    Target : {
+        type : String
+    },
+    Organization : {
+        type : String
+    },
+    QuotedAmount : {
+        type : String
+    },
+    Interest : {
+        type : String
+    },
+    Description : {
         type : String
     }
 }
 
 const SignIn = mongoose.model("SignIn", signInSchema);
+
+const ProductSchema = {
+    Pid : {
+        type : String
+    },
+    PdtOwner : {
+        type : String
+    },
+    Stocks : {
+        type : String
+    },
+    Review : {
+        type : String
+    },
+    Description : {
+        type : String
+    }
+}
+
+const Product = mongoose.model("Product", ProductSchema);
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -59,6 +111,10 @@ app.post('/signin', (req, res) => {
         const email = req.body.inputEmail;
         const password = req.body.inputPassword;
         const confPassword = req.body.inputConfirmPassword;
+        const pin = req.body.inputPin;
+        const address = req.body.inputAddress;
+        const contact = req.body.inputContact;
+        const type = req.body.type;
         if(password === confPassword){
             SignIn.findOne({EmailAddress: email}, async (error, data) => {
                 if(error){
@@ -68,14 +124,18 @@ app.post('/signin', (req, res) => {
                         const siginInData = new SignIn({
                             UserName: userName,
                             EmailAddress: email,
-                            Password: password
+                            Password: password,
+                            Address: address,
+                            Contact: contact,
+                            Pin: pin,
+                            Type : type
                         })
                         const usersSignin = await siginInData.save();
-                        console.log("Hola");
-                        res.redirect('/');
+                        console.log(req.body.type);
+                        res.render('home', {email: email});
                     } else {
                         console.log("Found");
-                        res.redirect('/');
+                        res.render('home', {email: email});
                     }
                 }
             })
